@@ -36,7 +36,7 @@ func repl() {
   fmt.Println("Pokedex v1")
   fmt.Println("No rights reserved")
   for ;; {
-    fmt.Print("> ")
+    fmt.Print("pokedex> ")
     scanner.Scan()
     text := scanner.Text()
     
