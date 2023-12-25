@@ -1,7 +1,6 @@
 package pokeapi
 
 import (
-	"fmt"
   "log"
 	"io"
   "net/http"
@@ -18,9 +17,12 @@ type Locations struct {
 	} `json:"results"`
 }
 
-func GetLocations() Locations {
+func GetLocations(url string) Locations {
+  if url == "" {
+    url = "https://pokeapi.co/api/v2/location/"
+  }
+
   var locations Locations
-  url := fmt.Sprintf("https://pokeapi.co/api/v2/location/")
   res, err := http.Get(url)
 
   if err != nil {
@@ -39,7 +41,7 @@ func GetLocations() Locations {
 
   err = json.Unmarshal(body, &locations)
 
-  if err!= nil {
+  if err != nil {
     log.Fatal(err)
   }
   return locations

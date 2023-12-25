@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+  "github.com/emmG17/pokedex/pokeapi"
 )
 
 type cliCommand struct {
@@ -12,39 +13,58 @@ type cliCommand struct {
   cb func() error
 }
 
-var commands map[string]cliCommand = map[string]cliCommand{
-"help": {
-    name: "help",
-    desc: "Prints this message",
-    cb: func() error {
-      fmt.Println("Commands:\nexit - Exits the program\nhelp - Prints this message")
-      return nil
+func getCommands() map[string]cliCommand {
+  return map[string]cliCommand{
+    "help": {
+      name: "help",
+      desc: "Prints this message",
+      cb: displayHelp,
     },
-  },
-  "exit": {
-    name: "exit",
-    desc: "Exits the program",
-    cb: func() error {
-      os.Exit(0) 
-      return nil
+    "exit": {
+      name: "exit",
+      desc: "Exits the program",
+      cb: func() error {
+        os.Exit(0) 
+        return nil
+      },
     },
-  },
+    "map": {
+      name: "map",
+      desc: "Gets 20 locations",
+      cb: func() error {
+        locations := pokeapi.GetLocations("")
+        for _, location := range locations.Results {
+          fmt.Println(location.Name)
+        }
+        return nil
+      },
+    },
+  }
+}
+
+func displayHelp() error {  
+  commands := getCommands()
+  for _, command := range commands {
+    fmt.Printf("%v: %v\n", command.name, command.desc)
+  }
+  return nil
 }
 
 func repl() {
   scanner := bufio.NewScanner(os.Stdin)
   fmt.Println("Pokedex v1")
   fmt.Println("No rights reserved")
-  for ;; {
+  for {
     fmt.Print("pokedex> ")
     scanner.Scan()
     text := scanner.Text()
     
+    commands := getCommands()
     command, ok := commands[text]
     if ok {
       command.cb()
     } else {
-      fmt.Println(text)
+      fmt.Println("Unrecognized command, try again")
     }
   }
 }
