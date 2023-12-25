@@ -4,13 +4,12 @@ import (
 	"bufio"
 	"fmt"
 	"os"
-  "github.com/emmG17/pokedex/pokeapi"
 )
 
 type cliCommand struct {
   name string
   desc string
-  cb func() error
+  cb func(*Config) error
 }
 
 func getCommands() map[string]cliCommand {
@@ -23,26 +22,17 @@ func getCommands() map[string]cliCommand {
     "exit": {
       name: "exit",
       desc: "Exits the program",
-      cb: func() error {
-        os.Exit(0) 
-        return nil
-      },
+      cb: exitCommand, 
     },
     "map": {
       name: "map",
       desc: "Gets 20 locations",
-      cb: func() error {
-        locations := pokeapi.GetLocations("")
-        for _, location := range locations.Results {
-          fmt.Println(location.Name)
-        }
-        return nil
-      },
+      cb: mapCommand, 
     },
   }
 }
 
-func displayHelp() error {  
+func displayHelp(config *Config) error {  
   commands := getCommands()
   for _, command := range commands {
     fmt.Printf("%v: %v\n", command.name, command.desc)
@@ -50,7 +40,25 @@ func displayHelp() error {
   return nil
 }
 
-func repl() {
+func exitCommand(config *Config) error {
+  os.Exit(0)
+  return nil
+}
+
+func mapCommand(config *Config) error {
+  locations, err := config.Client.GetLocations(config.Next)
+  if err != nil {
+    return err
+  }
+  config.Next = locations.Next
+  config.Previous = locations.Previous
+  for _, location := range locations.Results {
+    fmt.Println(location.Name)
+  }
+  return nil
+}
+
+func repl(config *Config) error {
   scanner := bufio.NewScanner(os.Stdin)
   fmt.Println("Pokedex v1")
   fmt.Println("No rights reserved")
@@ -62,7 +70,7 @@ func repl() {
     commands := getCommands()
     command, ok := commands[text]
     if ok {
-      command.cb()
+      command.cb(config)
     } else {
       fmt.Println("Unrecognized command, try again")
     }

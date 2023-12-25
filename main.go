@@ -1,5 +1,19 @@
 package main
 
+import "github.com/emmG17/pokedex/pokeapi"
+
+type Config struct {
+  Previous *string
+  Next *string
+  Client pokeapi.PokemonClient
+}
+
 func main() {
-  repl()  
+  config := Config{
+    Previous: nil,
+    Next: nil,
+    Client: pokeapi.NewPokemonClient(),
+  }
+
+  repl(&config)  
 }
