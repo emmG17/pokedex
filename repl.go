@@ -26,8 +26,13 @@ func getCommands() map[string]cliCommand {
     },
     "map": {
       name: "map",
-      desc: "Gets 20 locations",
+      desc: "Goes 20 locations forward",
       cb: mapCommand, 
+    },
+    "mapb": {
+      name: "mapb",
+      desc: "Goes 20 locations backwards",
+      cb: mapBCommand, 
     },
   }
 }
@@ -47,6 +52,19 @@ func exitCommand(config *Config) error {
 
 func mapCommand(config *Config) error {
   locations, err := config.Client.GetLocations(config.Next)
+  if err != nil {
+    return err
+  }
+  config.Next = locations.Next
+  config.Previous = locations.Previous
+  for _, location := range locations.Results {
+    fmt.Println(location.Name)
+  }
+  return nil
+}
+
+func mapBCommand(config *Config) error {
+  locations, err := config.Client.GetLocations(config.Previous)
   if err != nil {
     return err
   }
