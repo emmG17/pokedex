@@ -12,7 +12,7 @@ func main() {
   config := Config{
     Previous: nil,
     Next: nil,
-    Client: pokeapi.NewPokemonClient(),
+    Client: pokeapi.NewPokemonClient(5),
   }
 
   repl(&config)  
