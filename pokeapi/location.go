@@ -1,62 +1,24 @@
 package pokeapi
 import (
 	"encoding/json"
-	"errors"
-	"io"
-	"net/http"
 )
 
-type Locations struct {
-	Count    int    `json:"count"`
-	Next     *string `json:"next"`
-	Previous *string `json:"previous"`
-	Results  []struct {
-		Name string `json:"name"`
-		URL  string `json:"url"`
-	} `json:"results"`
-}
+
 
 func (c *PokemonClient) GetLocations(url *string) (Locations, error) {
   if url == nil {
-    defaultUrl := baseURL + "/location"
+    defaultUrl := baseURL + "/location-area"
     url = &defaultUrl
   }
 
-  var data []byte
+  data, err := c.get(url)
 
-  // Check if the URL is in the pokecache
-  if val, err := c.cache.Get(*url); err == nil  {
-     data = val 
-  } else {
-    req, err := http.NewRequest("GET", *url, nil)
-
-    if err!= nil {
-      return Locations{}, err
-    }
-
-    res, err := c.client.Do(req)
-
-    if err != nil {
-      return Locations{}, err
-    }
-
-    defer res.Body.Close()
-  
-    if res.StatusCode > 399 {
-      return Locations{}, errors.New("Response failed with status code " + res.Status) 
-    }
-
-    body, err := io.ReadAll(res.Body)
-
-    if err!= nil {
-      return Locations{}, err
-    }
-
-    data = body
+  if err != nil {
+    return Locations{}, err
   }
 
   var locations Locations
-  err := json.Unmarshal(data, &locations)
+  err = json.Unmarshal(data, &locations)
 
   if err != nil {
     return Locations{}, err
@@ -65,4 +27,27 @@ func (c *PokemonClient) GetLocations(url *string) (Locations, error) {
   c.cache.Add(*url, data)
 
   return locations, nil
+}
+
+
+func (c *PokemonClient) GetLocation(locationName *string) (Location, error) {
+  
+  url := baseURL + "/location-area/" + *locationName
+
+  data, err := c.get(&url)
+
+  if err!= nil {
+    return Location{}, err
+  }
+
+  var location Location
+  err = json.Unmarshal(data, &location)
+
+  if err!= nil {
+    return Location{}, err
+  }
+
+  c.cache.Add(url, data)
+
+  return location, nil
 }
