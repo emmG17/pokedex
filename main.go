@@ -5,6 +5,7 @@ import "github.com/emmG17/pokedex/pokeapi"
 type Config struct {
   Previous *string
   Next *string
+  SelectedArea *string
   Client pokeapi.PokemonClient
 }
 

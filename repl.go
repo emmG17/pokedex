@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"strings"
 )
 
 type cliCommand struct {
@@ -34,46 +35,12 @@ func getCommands() map[string]cliCommand {
       desc: "Goes 20 locations backwards",
       cb: mapBCommand, 
     },
+    "explore": {
+      name: "explore",
+      desc: "Explore a location",
+      cb: explore, 
+    },
   }
-}
-
-func displayHelp(config *Config) error {  
-  commands := getCommands()
-  for _, command := range commands {
-    fmt.Printf("%v: %v\n", command.name, command.desc)
-  }
-  return nil
-}
-
-func exitCommand(config *Config) error {
-  os.Exit(0)
-  return nil
-}
-
-func mapCommand(config *Config) error {
-  locations, err := config.Client.GetLocations(config.Next)
-  if err != nil {
-    return err
-  }
-  config.Next = locations.Next
-  config.Previous = locations.Previous
-  for _, location := range locations.Results {
-    fmt.Println(location.Name)
-  }
-  return nil
-}
-
-func mapBCommand(config *Config) error {
-  locations, err := config.Client.GetLocations(config.Previous)
-  if err != nil {
-    return err
-  }
-  config.Next = locations.Next
-  config.Previous = locations.Previous
-  for _, location := range locations.Results {
-    fmt.Println(location.Name)
-  }
-  return nil
 }
 
 func repl(config *Config) error {
@@ -84,10 +51,15 @@ func repl(config *Config) error {
     fmt.Print("pokedex> ")
     scanner.Scan()
     text := scanner.Text()
+
+    input := strings.Split(text, " ")
     
     commands := getCommands()
-    command, ok := commands[text]
+    command, ok := commands[input[0]]
     if ok {
+      if command.name == "explore" {
+        config.SelectedArea = &input[1]
+      }
       command.cb(config)
     } else {
       fmt.Println("Unrecognized command, try again")
