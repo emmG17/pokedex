@@ -6,8 +6,11 @@ type Config struct {
   Previous *string
   Next *string
   SelectedArea *string
+  SelectedPokemon *string
   Client pokeapi.PokemonClient
 }
+
+var Pokedex = make(map[string]pokeapi.Pokemon )
 
 func main() {
   config := Config{

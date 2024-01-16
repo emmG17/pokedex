@@ -62,4 +62,28 @@ func explore(config *Config) error {
   return nil
 }
 
+func catch(config *Config) error {
+  if config.SelectedPokemon == nil {
+    fmt.Println("No pokemon selected")
+    return nil
+  }
+
+  pokemon, err := config.Client.GetPokemon(config.SelectedPokemon)
+   
+  if err!= nil {
+    return err
+  }
+  fmt.Println("Throwing pokeball...")
+  if catched := CatchPokemon(pokemon.BaseExperience); catched {
+    Pokedex[pokemon.Name] = pokemon
+    fmt.Printf("%s caught!\n", pokemon.Name)
+  } else {
+    fmt.Printf("%s has escaped!\n", pokemon.Name)
+  }
+
+  return nil
+}
+
+  
+
 

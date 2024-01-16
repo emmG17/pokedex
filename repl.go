@@ -40,6 +40,11 @@ func getCommands() map[string]cliCommand {
       desc: "Explore a location",
       cb: explore, 
     },
+    "catch": {
+      name: "catch",
+      desc: "Catch a pokemon",
+      cb: catch, 
+    },
   }
 }
 
@@ -59,6 +64,9 @@ func repl(config *Config) error {
     if ok {
       if command.name == "explore" {
         config.SelectedArea = &input[1]
+      }
+      if command.name == "catch" {
+        config.SelectedPokemon = &input[1]
       }
       command.cb(config)
     } else {

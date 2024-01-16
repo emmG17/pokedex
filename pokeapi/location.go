@@ -3,8 +3,6 @@ import (
 	"encoding/json"
 )
 
-
-
 func (c *PokemonClient) GetLocations(url *string) (Locations, error) {
   if url == nil {
     defaultUrl := baseURL + "/location-area"
