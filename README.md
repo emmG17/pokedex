@@ -19,7 +19,7 @@ PokeREPL is a lightweight and efficient Read-Eval-Print Loop (REPL) Pokedex writ
 2. Clone this repository:
 
     ```bash
-    git clone https://github.com/emmG17/pokedex.git
+    git clone git@github.com:emmG17/pokedex.git
     ```
 
 3. Navigate to the project directory:
