@@ -50,6 +50,11 @@ func getCommands() map[string]cliCommand {
       desc: "Inspect a pokemon",
       cb: inspect, 
     },
+    "pokedex": {
+      name: "pokedex",
+      desc: "Show your pokedex",
+      cb: pokedex, 
+    },
   }
 }
 
@@ -59,7 +64,10 @@ func repl(config *Config) error {
   fmt.Println("No rights reserved")
   for {
     fmt.Print("pokedex> ")
-    scanner.Scan()
+    ok := scanner.Scan()
+    if !ok {
+      return nil
+    }
     text := scanner.Text()
 
     input := strings.Split(text, " ")

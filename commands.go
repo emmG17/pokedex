@@ -110,3 +110,16 @@ func inspect(config *Config) error {
   }
   return nil
 }
+
+func pokedex(config *Config) error {
+  if len(Pokedex) > 0 {
+    fmt.Println("Your Pokedex:")
+    for pokemon := range Pokedex {
+      fmt.Println(pokemon)
+    }
+  } else {
+    fmt.Println("You have not caught any pokemon yet")
+  }
+  return nil
+}
+  
