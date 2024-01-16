@@ -45,6 +45,11 @@ func getCommands() map[string]cliCommand {
       desc: "Catch a pokemon",
       cb: catch, 
     },
+    "inspect": {
+      name: "inspect",
+      desc: "Inspect a pokemon",
+      cb: inspect, 
+    },
   }
 }
 
@@ -65,7 +70,7 @@ func repl(config *Config) error {
       if command.name == "explore" {
         config.SelectedArea = &input[1]
       }
-      if command.name == "catch" {
+      if command.name == "catch" || command.name == "inspect" {
         config.SelectedPokemon = &input[1]
       }
       command.cb(config)

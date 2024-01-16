@@ -84,6 +84,29 @@ func catch(config *Config) error {
   return nil
 }
 
-  
+func inspect(config *Config) error {
+  if config.SelectedPokemon == nil {
+    fmt.Println("No pokemon selected")
+    return nil
+  }
 
+  pokemon, ok := Pokedex[*config.SelectedPokemon]
 
+  if !ok {
+    fmt.Println("You have not caught this pokemon yet")
+    return nil
+  }
+
+  fmt.Printf("Name: %s\n", pokemon.Name)
+  fmt.Printf("Height: %d\n", pokemon.Height)
+  fmt.Printf("Weight: %d\n", pokemon.Weight)
+  fmt.Println("Stats:")
+  for _, stat := range pokemon.Stats {
+    fmt.Printf("  %s: %d\n", stat.Stat.Name, stat.BaseStat)
+  }
+  fmt.Println("Types:")
+  for _, type_ := range pokemon.Types {
+    fmt.Printf("  %s\n", type_.Type.Name)
+  }
+  return nil
+}
